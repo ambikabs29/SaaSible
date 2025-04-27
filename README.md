@@ -61,10 +61,16 @@ This application uses Firebase for authentication and potentially other backend 
       ```
     - Replace the `"YOUR_..."` placeholders with the actual values from your Firebase project configuration.
     - **Note:** `.env.local` is included in `.gitignore` and should **never** be committed to version control.
+    - **Important**: Make sure the environment variables are correctly prefixed with `NEXT_PUBLIC_` if they need to be accessed by the browser.
 
 4.  **Enable Authentication Methods:**
     - In the Firebase Console, go to "Authentication" (under Build).
-    - Click the "Sign-in method" tab.
+    - Click the "Settings" tab (or "Sign-in method" tab depending on console version).
+    - **Authorize Domains:** Under the "Authorized domains" section, click "Add domain" and add the domains where your application will be hosted.
+        - For local development, `localhost` is usually authorized by default. If you are running on a specific port (like `localhost:9002`), ensure `localhost` is listed.
+        - For preview or production deployments (e.g., Vercel, IDX previews), add the specific domain provided by the platform (e.g., `your-app-name.vercel.app`, `your-idx-preview-url.cloudworkstations.dev`).
+        - **The `auth/unauthorized-domain` error occurs if the domain you are accessing the app from is not listed here.**
+    - **Enable Providers:** Go back to the "Sign-in method" tab (or "Providers" tab).
     - Enable the sign-in providers you want to use (e.g., Email/Password, Google, GitHub).
     - For Google and GitHub, you might need to provide additional configuration details (like OAuth consent screen setup). Follow the Firebase documentation.
 
