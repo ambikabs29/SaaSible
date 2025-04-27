@@ -61,15 +61,15 @@ This application uses Firebase for authentication and potentially other backend 
       ```
     - Replace the `"YOUR_..."` placeholders with the actual values from your Firebase project configuration.
     - **Note:** `.env.local` is included in `.gitignore` and should **never** be committed to version control.
-    - **Important**: Make sure the environment variables are correctly prefixed with `NEXT_PUBLIC_` if they need to be accessed by the browser.
+    - **Important**: Make sure the environment variables are correctly prefixed with `NEXT_PUBLIC_` if they need to be accessed by the browser. **Missing or incorrect API keys can lead to `auth/api-key-not-valid` errors.**
 
 4.  **Enable Authentication Methods:**
     - In the Firebase Console, go to "Authentication" (under Build).
     - Click the "Settings" tab (or "Sign-in method" tab depending on console version).
-    - **Authorize Domains:** Under the "Authorized domains" section, click "Add domain" and add the domains where your application will be hosted.
-        - For local development, `localhost` is usually authorized by default. If you are running on a specific port (like `localhost:9002`), ensure `localhost` is listed.
-        - For preview or production deployments (e.g., Vercel, IDX previews), add the specific domain provided by the platform (e.g., `your-app-name.vercel.app`, `your-idx-preview-url.cloudworkstations.dev`).
-        - **The `auth/unauthorized-domain` error occurs if the domain you are accessing the app from is not listed here.**
+    - **Authorize Domains:** Under the "Authorized domains" section, click "Add domain" and add the domains where your application will be accessed from.
+        - **Crucial Step:** For local development, `localhost` is usually authorized by default. If you are running on a different host or port (like `127.0.0.1` or a specific preview URL), you **must** add that domain here.
+        - For preview or production deployments (e.g., Vercel, IDX previews), add the specific domain provided by the platform (e.g., `your-app-name.vercel.app`, `your-idx-preview-url.cloudworkstations.dev`, `your-idx-preview-url.googleusercontent.com`).
+        - **Error Note:** The `auth/unauthorized-domain` error specifically means the domain you are currently using to access the app (visible in your browser's address bar) **is not listed** in this "Authorized domains" section in your Firebase project settings. You need to add it.
     - **Enable Providers:** Go back to the "Sign-in method" tab (or "Providers" tab).
     - Enable the sign-in providers you want to use (e.g., Email/Password, Google, GitHub).
     - For Google and GitHub, you might need to provide additional configuration details (like OAuth consent screen setup). Follow the Firebase documentation.
@@ -84,7 +84,7 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:9002](http://localhost:9002) (or the specified port) with your browser to see the result.
+Open [http://localhost:9002](http://localhost:9002) (or the specified port) with your browser to see the result. If you use a different port or host, remember to authorize it in Firebase (Step 4 above).
 
 ## Key Technologies
 
@@ -124,3 +124,5 @@ Contributions are welcome! Please follow standard Git workflow (fork, branch, pu
 ## License
 
 [Specify your license here, e.g., MIT]
+
+```
