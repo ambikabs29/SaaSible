@@ -1,6 +1,6 @@
 # SaaSible
 
-SaaSible is your central hub for discovering, purchasing, and managing Software-as-a-Service (SaaS) applications.
+SaaSible is your central hub for discovering, purchasing, and managing Softwa9re-as-a-Service (SaaS) applications.
 
 ## Getting Started
 

@@ -94,7 +94,7 @@ export default function SignupPage() {
           description = "An account already exists with the same email address but different sign-in credentials. Try signing in using a different provider or use email/password.";
         } else if (error.code === 'auth/popup-closed-by-user') {
             // Don't show a destructive toast if the user intentionally closed the popup
-            description = "Sign-up process cancelled.";
+            description = `Sign-up with ${providerName === 'google' ? 'Google' : 'GitHub'} was cancelled.`; // Refined message
             toast({ variant: "default", title: "Sign Up Cancelled", description });
             setSocialLoading(null); // Reset loading state immediately for cancellation
             return; // Exit early

@@ -85,7 +85,7 @@ export default function LoginPage() {
         if (error.code === 'auth/account-exists-with-different-credential') {
           description = "An account already exists with the same email address but different sign-in credentials. Try signing in using a different provider.";
         } else if (error.code === 'auth/popup-closed-by-user') {
-            description = "Sign-in cancelled.";
+            description = `Sign-in with ${providerName === 'google' ? 'Google' : 'GitHub'} was cancelled.`; // Refined message
             toast({ variant: "default", title: "Sign In Cancelled", description });
             setSocialLoading(null); // Reset loading state immediately for cancellation
             return; // Exit early
