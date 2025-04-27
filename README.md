@@ -37,7 +37,7 @@ This application uses Firebase for authentication and potentially other backend 
 2.  **Register a Web App:**
     - In your Firebase project dashboard, click the Web icon (`</>`) to add a web app.
     - Give your app a nickname (e.g., "SaaSible Web").
-    - **Important:** Do NOT enable Firebase Hosting at this step if you plan to deploy elsewhere (like Vercel).
+    - **Important:** Do NOT enable Firebase Hosting at this step if you plan to deploy elsewhere (like Vercel or App Hosting).
     - After registering, Firebase will provide you with configuration details (apiKey, authDomain, projectId, etc.).
 
 3.  **Configure Environment Variables:**
@@ -63,13 +63,23 @@ This application uses Firebase for authentication and potentially other backend 
     - **Note:** `.env.local` is included in `.gitignore` and should **never** be committed to version control.
     - **Important**: Make sure the environment variables are correctly prefixed with `NEXT_PUBLIC_` if they need to be accessed by the browser. **Missing or incorrect API keys can lead to `auth/api-key-not-valid` errors.**
 
-4.  **Enable Authentication Methods:**
+4.  **Enable Authentication Methods & Authorize Domains:**
     - In the Firebase Console, go to "Authentication" (under Build).
     - Click the "Settings" tab (or "Sign-in method" tab depending on console version).
-    - **Authorize Domains:** Under the "Authorized domains" section, click "Add domain" and add the domains where your application will be accessed from.
-        - **Crucial Step:** For local development, `localhost` is usually authorized by default. If you are running on a different host or port (like `127.0.0.1` or a specific preview URL), you **must** add that domain here.
-        - For preview or production deployments (e.g., Vercel, IDX previews), add the specific domain provided by the platform (e.g., `your-app-name.vercel.app`, `your-idx-preview-url.cloudworkstations.dev`, `your-idx-preview-url.googleusercontent.com`).
-        - **Error Note:** The `auth/unauthorized-domain` error specifically means the domain you are currently using to access the app (visible in your browser's address bar) **is not listed** in this "Authorized domains" section in your Firebase project settings. You need to add it.
+
+    - **===>>> CRITICAL STEP for `auth/unauthorized-domain` errors <<<===**
+    - **Authorize Domains:** Under the "Authorized domains" section, click "Add domain" and add **ALL** the domains where your application will be accessed from.
+        - **Local Development:** `localhost` is usually added by default. If you are running on a different host or port (like `127.0.0.1` or a specific port like `9002`), you **must** add `localhost` or `127.0.0.1`.
+        - **Preview/Deployment URLs (Vercel, IDX, etc.):** You **MUST** add the specific URL provided by the platform.
+            - **For IDX Previews:** Add the domain shown in your browser's address bar when you access the preview. This might look like:
+                - `your-idx-preview-url.cloudworkstations.dev`
+                - `your-idx-preview-url.googleusercontent.com`
+                - (Check your browser's address bar for the exact domain)
+            - **For Vercel:** Add `your-app-name.vercel.app`.
+            - **For App Hosting:** Add the specific domain assigned to your App Hosting backend.
+        - **Error Note:** The `auth/unauthorized-domain` error specifically means the domain you are currently trying to sign in from (visible in your browser's address bar) **is NOT listed** in this "Authorized domains" section in your Firebase project settings. You need to add it. Double-check the URL in your browser!
+    - **=============================================================**
+
     - **Enable Providers:** Go back to the "Sign-in method" tab (or "Providers" tab).
     - Enable the sign-in providers you want to use (e.g., Email/Password, Google, GitHub).
     - For Google and GitHub, you might need to provide additional configuration details (like OAuth consent screen setup). Follow the Firebase documentation.
@@ -84,7 +94,7 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:9002](http://localhost:9002) (or the specified port) with your browser to see the result. If you use a different port or host, remember to authorize it in Firebase (Step 4 above).
+Open [http://localhost:9002](http://localhost:9002) (or the specified port) with your browser to see the result. If you use a different host or port, or a preview URL, **remember to authorize it in Firebase (Step 4 above)**.
 
 ## Key Technologies
 
@@ -124,5 +134,4 @@ Contributions are welcome! Please follow standard Git workflow (fork, branch, pu
 ## License
 
 [Specify your license here, e.g., MIT]
-
 ```
