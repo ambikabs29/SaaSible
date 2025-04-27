@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -22,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Github, Mail } from "lucide-react";
+import { Github } from "lucide-react"; // Removed Mail icon as it's not used directly for signup button
 import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/lib/firebase/config";
 import { useRouter } from "next/navigation";
@@ -64,12 +65,16 @@ export default function SignupPage() {
       router.push("/dashboard"); // Redirect to dashboard or desired page
     } catch (error: any) {
       console.error("Signup Error:", error);
-      let description = "An unexpected error occurred. Please try again.";
+      let description = "An unexpected error occurred. Please check your network connection and try again.";
       if (error.code === 'auth/email-already-in-use') {
         description = "This email address is already registered. Please try logging in.";
       } else if (error.code === 'auth/weak-password') {
         description = "The password is too weak. Please choose a stronger password.";
+      } else if (error.code === 'auth/invalid-email') {
+         description = "The email address is not valid.";
       }
+      // Firebase might throw other errors like network issues, quota exceeded etc.
+      // The generic message covers those.
       toast({ variant: "destructive", title: "Sign Up Failed", description });
     } finally {
       setLoading(false);
@@ -84,15 +89,21 @@ export default function SignupPage() {
       router.push('/dashboard'); // Redirect to dashboard after sign in
     } catch (error: any) {
        console.error("Error signing in:", error);
-        let description = "Could not sign you in. Please try again.";
+        let description = "Could not sign you in. Please check your network or try again later.";
         if (error.code === 'auth/account-exists-with-different-credential') {
-          description = "An account already exists with the same email address but different sign-in credentials. Try signing in using a different provider.";
+          description = "An account already exists with the same email address but different sign-in credentials. Try signing in using a different provider or use email/password.";
         } else if (error.code === 'auth/popup-closed-by-user') {
-            description = "Sign-up cancelled.";
+            // Don't show a destructive toast if the user intentionally closed the popup
+            description = "Sign-up process cancelled.";
             toast({ variant: "default", title: "Sign Up Cancelled", description });
             setSocialLoading(null); // Reset loading state immediately for cancellation
             return; // Exit early
+        } else if (error.code === 'auth/popup-blocked') {
+             description = "Sign-up popup blocked by the browser. Please allow popups for this site.";
+        } else if (error.code === 'auth/cancelled-popup-request') {
+             description = "Sign-up cancelled. Only one sign-up popup can be open at a time.";
         }
+        // Other errors (network, provider errors) will use the generic message.
        toast({ variant: "destructive", title: "Sign Up Failed", description });
     } finally {
        setSocialLoading(null);
@@ -155,7 +166,7 @@ export default function SignupPage() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={loading || !!socialLoading}>
-                {loading ? "Creating Account..." : "Sign Up"}
+                {loading ? "Creating Account..." : "Sign Up with Email"}
               </Button>
             </form>
           </Form>
