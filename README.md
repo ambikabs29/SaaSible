@@ -69,7 +69,7 @@ This application uses Firebase for authentication and potentially other backend 
 
     - **===>>> CRITICAL STEP for `auth/unauthorized-domain` errors <<<===**
     - **Authorize Domains:** Under the "Authorized domains" section, click "Add domain" and add **ALL** the domains where your application will be accessed from.
-        - **Local Development:** `localhost` is usually added by default. If you are running on a different host or port (like `127.0.0.1` or a specific port like `9002`), you **must** add `localhost` or `127.0.0.1`.
+        - **Local Development (e.g., `localhost:9002`):** `localhost` is usually added by default. However, **you MUST verify** it is present. If you are running on `127.0.0.1` or a different local port, you **must** add `localhost` or `127.0.0.1` explicitly. **For Google/GitHub sign-in to work from `http://localhost:9002`, ensure `localhost` is in this list.**
         - **Preview/Deployment URLs (Vercel, IDX, etc.):** You **MUST** add the specific URL provided by the platform.
             - **For IDX Previews:** Add the domain shown in your browser's address bar when you access the preview. This might look like:
                 - `your-idx-preview-url.cloudworkstations.dev`
@@ -77,7 +77,7 @@ This application uses Firebase for authentication and potentially other backend 
                 - (Check your browser's address bar for the exact domain)
             - **For Vercel:** Add `your-app-name.vercel.app`.
             - **For App Hosting:** Add the specific domain assigned to your App Hosting backend.
-        - **Error Note:** The `auth/unauthorized-domain` error specifically means the domain you are currently trying to sign in from (visible in your browser's address bar) **is NOT listed** in this "Authorized domains" section in your Firebase project settings. You need to add it. Double-check the URL in your browser!
+        - **Error Note:** The `auth/unauthorized-domain` error specifically means the domain you are currently trying to sign in from (visible in your browser's address bar) **is NOT listed** in this "Authorized domains" section in your Firebase project settings. You need to add it. Double-check the URL in your browser and ensure it's listed in Firebase!
     - **=============================================================**
 
     - **Enable Providers:** Go back to the "Sign-in method" tab (or "Providers" tab).
@@ -94,7 +94,7 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:9002](http://localhost:9002) (or the specified port) with your browser to see the result. If you use a different host or port, or a preview URL, **remember to authorize it in Firebase (Step 4 above)**.
+Open [http://localhost:9002](http://localhost:9002) (or the specified port) with your browser to see the result. If you use a different host or port, or a preview URL, **remember to authorize it in Firebase (Step 4 above)**. Google/GitHub sign-in will only work if the domain you are accessing the app from (e.g., `localhost`) is listed in the Firebase Authorized Domains.
 
 ## Key Technologies
 
