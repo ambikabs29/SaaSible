@@ -40,17 +40,22 @@ export function SiteHeader() {
       toast({ title: "Signed In", description: `Successfully signed in with ${providerName === 'google' ? 'Google' : 'GitHub'}.` });
       router.push('/dashboard'); // Redirect to dashboard after sign in
     } catch (error: any) {
-       console.error("Error signing in:", error);
+       console.error(`Error signing in with ${providerName}:`, error);
        let description = "Could not sign you in. Please try again.";
         // Handle specific errors like account exists with different credential
         if (error.code === 'auth/account-exists-with-different-credential') {
           description = "An account already exists with the same email address but different sign-in credentials. Try signing in using a different provider.";
+           toast({ variant: "destructive", title: "Sign In Failed", description });
         } else if (error.code === 'auth/popup-closed-by-user') {
-            description = `Sign-in with ${providerName === 'google' ? 'Google' : 'GitHub'} was cancelled.`; // Refined message
-            toast({ variant: "default", title: "Sign In Cancelled", description });
+            description = `Sign-in with ${providerName === 'google' ? 'Google' : 'GitHub'} was cancelled.`; // Specific message
+            toast({ variant: "default", title: "Sign In Cancelled", description }); // Use default variant
             return; // Exit early
+        } else if (error.code === 'auth/unauthorized-domain') {
+             description = "This domain is not authorized for OAuth operations. Please check Firebase console settings.";
+              toast({ variant: "destructive", title: "Configuration Error", description });
+        } else {
+             toast({ variant: "destructive", title: "Sign In Failed", description });
         }
-        toast({ variant: "destructive", title: "Sign In Failed", description });
     }
    };
 
