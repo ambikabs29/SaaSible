@@ -64,7 +64,7 @@ export default function SignupPage() {
       toast({ title: "Account Created", description: "Your account has been successfully created." });
       router.push("/dashboard"); // Redirect to dashboard or desired page
     } catch (error: any) {
-      console.error("Signup Error:", error);
+      console.error("Signup Error (Email/Password):", error);
       let description = "An unexpected error occurred. Please check your network connection and try again.";
       if (error.code === 'auth/email-already-in-use') {
         description = "This email address is already registered. Please try logging in.";
@@ -88,28 +88,33 @@ export default function SignupPage() {
       toast({ title: "Signed Up", description: `Successfully signed up with ${providerName === 'google' ? 'Google' : 'GitHub'}.` });
       router.push('/dashboard'); // Redirect to dashboard after sign in
     } catch (error: any) {
-       console.error(`Error signing up with ${providerName}:`, error);
         let description = "Could not sign you in. Please check your network or try again later.";
         if (error.code === 'auth/account-exists-with-different-credential') {
+          console.error(`Error signing up with ${providerName}:`, error);
           description = "An account already exists with the same email address but different sign-in credentials. Try signing in using a different provider or use email/password.";
            toast({ variant: "destructive", title: "Sign Up Failed", description });
         } else if (error.code === 'auth/popup-closed-by-user') {
             // Don't show a destructive toast if the user intentionally closed the popup
+            console.log(`Sign-up with ${providerName} cancelled by user (popup closed).`); // More specific log
             description = `Sign-up with ${providerName === 'google' ? 'Google' : 'GitHub'} was cancelled.`; // Specific message
             toast({ variant: "default", title: "Sign Up Cancelled", description }); // Use default variant
             setSocialLoading(null); // Reset loading state immediately
             return; // Exit early
         } else if (error.code === 'auth/popup-blocked') {
+             console.error(`Error signing up with ${providerName}:`, error);
              description = "Sign-up popup blocked by the browser. Please allow popups for this site.";
               toast({ variant: "destructive", title: "Sign Up Failed", description });
         } else if (error.code === 'auth/cancelled-popup-request') {
+             console.error(`Error signing up with ${providerName}:`, error);
              description = "Sign-up cancelled. Only one sign-up popup can be open at a time.";
               toast({ variant: "destructive", title: "Sign Up Failed", description });
          } else if (error.code === 'auth/unauthorized-domain') {
+              console.error(`Error signing up with ${providerName}:`, error);
               description = "This domain is not authorized for OAuth operations. Please check Firebase console settings.";
                toast({ variant: "destructive", title: "Configuration Error", description });
         } else {
              // Other errors (network, provider errors) will use the generic message.
+             console.error(`Error signing up with ${providerName}:`, error);
             toast({ variant: "destructive", title: "Sign Up Failed", description });
         }
     } finally {

@@ -58,7 +58,7 @@ export default function LoginPage() {
       toast({ title: "Login Successful", description: "Welcome back!" });
       router.push("/dashboard"); // Redirect to dashboard or desired page
     } catch (error: any) {
-      console.error("Login Error:", error);
+      console.error("Login Error (Email/Password):", error);
       let description = "Invalid email or password. Please try again.";
        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
          description = "Invalid email or password.";
@@ -80,21 +80,24 @@ export default function LoginPage() {
       toast({ title: "Signed In", description: `Successfully signed in with ${providerName === 'google' ? 'Google' : 'GitHub'}.` });
       router.push('/dashboard'); // Redirect to dashboard after sign in
     } catch (error: any) {
-       console.error(`Error signing in with ${providerName}:`, error);
         let description = "Could not sign you in. Please try again.";
         if (error.code === 'auth/account-exists-with-different-credential') {
+          console.error(`Error signing in with ${providerName}:`, error);
           description = "An account already exists with the same email address but different sign-in credentials. Try signing in using a different provider.";
           toast({ variant: "destructive", title: "Sign In Failed", description });
         } else if (error.code === 'auth/popup-closed-by-user') {
+            console.log(`Sign-in with ${providerName} cancelled by user (popup closed).`); // More specific log
             description = `Sign-in with ${providerName === 'google' ? 'Google' : 'GitHub'} was cancelled.`; // Specific message for user cancellation
             toast({ variant: "default", title: "Sign In Cancelled", description }); // Use default variant, not destructive
             setSocialLoading(null); // Ensure loading state is reset
             return; // Exit early, no need for generic error toast
         } else if (error.code === 'auth/unauthorized-domain') {
+             console.error(`Error signing in with ${providerName}:`, error);
              description = "This domain is not authorized for OAuth operations. Please check Firebase console settings.";
               toast({ variant: "destructive", title: "Configuration Error", description });
         } else {
             // Generic error for other cases
+            console.error(`Error signing in with ${providerName}:`, error);
             toast({ variant: "destructive", title: "Sign In Failed", description });
         }
     } finally {
